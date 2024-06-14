@@ -23,20 +23,36 @@ concurrency:
 jobs:
   # Single deploy job since we're just deploying
   build:
-    runs-on: ubuntu-22.04
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [ 20 ]
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 9
-      - name: Use Node.js ${{ matrix.node-version }}
+            version: 9
+      - name: Set up Node
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install
+      - name: Build
+        run: pnpm run build
+      - name: Setup Pages
+        uses: pnpm/actions/configure-pages@v4
+      - name: Upload artifact
+        uses: pnpm/actions/upload-pages-artifact@v3
+        with:
+          # Upload dist folder
+          path: './dist'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: pnpm/actions/deploy-pages@v4
