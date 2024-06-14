@@ -47,12 +47,12 @@ jobs:
       - name: Build
         run: pnpm run build
       - name: Setup Pages
-        uses: pnpm/actions/configure-pages@v4
+        uses: actions/configure-pages@v4
       - name: Upload artifact
-        uses: pnpm/actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v3
         with:
           # Upload dist folder
           path: './dist'
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: pnpm/actions/deploy-pages@v4
+        uses: actions/deploy-pages@v4
